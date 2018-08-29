@@ -1,12 +1,20 @@
 Package: wos
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com")
-Description: What the package does (one paragraph).
-License: What license it uses
-Encoding: UTF-8
+Title: Windows of Selection
+Version: 0.0.1
+Authors@R: c( person("Andy", "South", , "southandy@gmail.com", role = c("aut", "cre")),
+              person("Ian", "Hastings", , "Ian.Hastings@lstmed.ac.uk", role = c("aut")) )
+Description: Early development.
+Depends:
+    R (>= 3.1.2)
+Imports:
+    ggplot2,
+    stringr,
+    tidyr,
+    dplyr,
+    patchwork,
+    scales,
+    rlang,
+    resistance
+License: GPL-3
 LazyData: true
+RoxygenNote: 6.1.0
