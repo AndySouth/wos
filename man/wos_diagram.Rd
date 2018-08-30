@@ -4,12 +4,12 @@
 \alias{wos_diagram}
 \title{plot idealised diagram to illustrate 'windows of selection'}
 \usage{
-wos_diagram(conc_n = 50, conc_rr_mort0 = 0.6, conc_ss_mort0 = 0.1,
+wos_diagram(conc_n = 100, conc_rr_mort0 = 0.6, conc_ss_mort0 = 0.1,
   mort_slope = 3, sr = TRUE, win_dom_strt = 0.5, rr_cost = 0,
   dom_cost = 0, exposure = 0.5, max_gen = 1000, startfreq = 0.001,
-  title = "Window of selection", addwindow = TRUE, addshading = TRUE,
+  title = "", addwindow = TRUE, addshading = TRUE,
   addlabels = TRUE, legendpos = "bottom", plot = TRUE, sim = FALSE,
-  adv = FALSE, logadv = TRUE, lab_dom = FALSE)
+  adv = FALSE, logadv = TRUE, lab_dom = 0)
 }
 \arguments{
 \item{conc_n}{number of x intervals default 50, will influence smoothness of lines, converted to 0-1}
@@ -52,7 +52,7 @@ wos_diagram(conc_n = 50, conc_rr_mort0 = 0.6, conc_ss_mort0 = 0.1,
 
 \item{logadv}{whether to use log scale in selective advantage plots}
 
-\item{lab_dom}{whether to add labels of dominance values}
+\item{lab_dom}{whether to add labels of dominance values, 0 for none, 1 for all, 2 every other}
 }
 \value{
 ggplot object

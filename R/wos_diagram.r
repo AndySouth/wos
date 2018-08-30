@@ -22,7 +22,7 @@
 #' @param sim whether to run simulation across the window of selection
 #' @param adv whether to calculate and output selective advantage
 #' @param logadv whether to use log scale in selective advantage plots
-#' @param lab_dom whether to add labels of dominance values
+#' @param lab_dom whether to add labels of dominance values, 0 for none, 1 for all, 2 every other
 # @param xreverse whether to reverse x axis for declining concentration
 #'
 #' @import ggplot2 dplyr patchwork
@@ -36,7 +36,7 @@
 #' @export
 
 
-wos_diagram <- function( conc_n = 50,
+wos_diagram <- function( conc_n = 100,
                       #conc_rr_mort1 <- 0.7 # concentration killing all of rr
                       #conc_ss_mort1 <- 0.3 # concentration killing all of ss
                       #or try mort 0 because fits better in y=mx+c
@@ -50,7 +50,7 @@ wos_diagram <- function( conc_n = 50,
                       exposure = 0.5, #only used in the simulation
                       max_gen = 1000, #used in simulations
                       startfreq = 0.001,
-                      title = "Window of selection",
+                      title = '', #"Window of selection",
                       addwindow = TRUE,
                       addshading = TRUE,
                       addlabels = TRUE,
@@ -59,11 +59,14 @@ wos_diagram <- function( conc_n = 50,
                       sim = FALSE,
                       adv = FALSE,
                       logadv = TRUE,
-                      lab_dom = FALSE
+                      lab_dom = 0
                       #xreverse = TRUE now xreverse is fixed
 ) {
 
   if (rr_cost > 0 & sim) warning('running simulation with rr_cost>0 can cause it to crash')
+
+  #the +1 makes the intervals neat, i.e allows for 0
+  conc_n <- conc_n + 1
 
   concs <- seq(0,1,length=conc_n)
   #trying (and failing) to base directly on helps2017
@@ -86,6 +89,11 @@ wos_diagram <- function( conc_n = 50,
   conc_sr_mort0 <- conc_ss_mort0 + win_dom_strt*(conc_rr_mort0-conc_ss_mort0)
   mort_sr <- mort_slope * (concs-conc_sr_mort0) #+0 #y=m(x-x1)+y1 slope and a point where y=0
   mort_sr <- ifelse(mort_sr>1,1,ifelse(mort_sr<0,0,mort_sr))
+  #can I add dominance of cost in if there is a cost
+  #if dominance 0 mortality of sr same as for ss (i.e. 0)
+  if ( rr_cost > 0 & dom_cost > 0)
+    mort_sr <- ifelse(mort_sr<mort_rr,mort_rr*dom_cost,mort_sr)
+
   #this creates a different pattern from the science paper when dom=0.5
   #i.e. the SR crosses mort1 at same position as RR and mort0 as SS
   #mort_sr <- (win_dom_strt*mort_rr)+((1-win_dom_strt)*mort_ss)
@@ -100,7 +108,9 @@ wos_diagram <- function( conc_n = 50,
   win_closes <- concs[min(which(mort_ss > mort_rr))]
 
   sr_win_opens <- concs[max(which(mort_ss > mort_sr))]
-  sr_win_closes <- concs[min(which(mort_ss > mort_sr))]
+  #win dominance closes at same time as win selection
+  sr_win_closes <- win_closes
+  #sr_win_closes <- concs[min(which(mort_ss > mort_sr))]
 
   dfdiag <- dplyr::data_frame( conc = c(concs,concs,concs),
                         genotype = c(rep('rr',conc_n),
@@ -122,7 +132,7 @@ wos_diagram <- function( conc_n = 50,
   dfwindow <- data_frame( conc = concs[win_indices],
                           rr = mort_rr[win_indices],
                           ss = mort_ss[win_indices])
-  #experimenting with window for sr
+  #window for sr
   win_indices <- which(mort_ss > mort_sr)
   dfwin_sr <- data_frame( conc = concs[win_indices],
                           sr = mort_sr[win_indices],
@@ -139,9 +149,10 @@ wos_diagram <- function( conc_n = 50,
     labs(title = title) +
     #labs(x='Time or declining insecticide concentration') +
     scale_x_continuous(trans = 'reverse',
-                       breaks = c(0.2,0.8),
-                       labels = c('Low concentration\nLong time after application',
-                                  'High concentration\nShort time after application')) +
+                       breaks = c(0.2,0.5,0.8),
+                       labels = c('\nLow concentration\nLong time after application',
+                                  'Insecticide',
+                                  '\nHigh concentration\nShort time after application')) +
     scale_y_continuous( limits = c(0,1),
                         breaks = c(0,0.5,1)) +
                         #labels = c(0,50,100)) +
@@ -161,40 +172,54 @@ wos_diagram <- function( conc_n = 50,
            axis.line.y = element_line())
            #panel.background = element_rect(colour = 'grey60', fill=NA, size=0.5))
 
-  #shading window of selection, i'm not sure whether helpful to shade between
-  #the curves or vertically
-  #experimenting with changing dfwindow above just to show sr window
-  if (addshading) gg <- gg + geom_ribbon(data=dfwindow,aes(x=conc, ymin=rr, ymax=ss),inherit.aes=FALSE, fill = "orange", alpha = .1, show.legend = FALSE)
-  #polygon way didn't work
-  #geom_polygon(data=filter(dfdiag,genotype!='sr' & conc<=win_opens & conc>=win_closes),aes(x=conc, y=mortality),inherit.aes=FALSE, fill = "orange", alpha = .1, show.legend = FALSE) +
+  #shading window of selection
+  #i think shading between the curves like this is misleading
+  #it implies points on the x axis are outside of the window of selection that are actually in it
+  #if (addshading) gg <- gg + geom_ribbon(data=dfwindow,aes(x=conc, ymin=rr, ymax=ss),inherit.aes=FALSE, fill = "orange", alpha = .1, show.legend = FALSE)
+  #if (addshading & sr ) gg <- gg + geom_ribbon(data=dfwin_sr,aes(x=conc, ymin=sr, ymax=ss),inherit.aes=FALSE, fill = "red", alpha = .1, show.legend = FALSE)
+  #vertical shading for windows
+  if (addshading) gg <- gg + geom_ribbon(data=dfwindow,aes(x=conc, ymin=0, ymax=1),inherit.aes=FALSE, fill = "orange", alpha = .1, show.legend = FALSE)
+  if (addshading & sr ) gg <- gg + geom_ribbon(data=dfwin_sr,aes(x=conc, ymin=0, ymax=1),inherit.aes=FALSE, fill = "red", alpha = .1, show.legend = FALSE)
 
-  if (addshading & sr ) gg <- gg + geom_ribbon(data=dfwin_sr,aes(x=conc, ymin=sr, ymax=ss),inherit.aes=FALSE, fill = "red", alpha = .1, show.legend = FALSE)
+
 
   #vertical lines for window opening and closing
   if (addwindow) gg <- gg + geom_vline( xintercept = c(win_opens,win_closes), linetype='dotted', lwd=2)
+  #sr window opening
+  if (addwindow & sr) gg <- gg + geom_vline( xintercept = c(sr_win_opens), linetype='dotted', lwd=1)
 
 
   if (addlabels)
   {
     gg <- gg +
-      annotate("text", x = win_opens+0.05, y = 0.75, label = "window opens", angle=90) +
-      annotate("text", x = win_closes+0.05, y = 0.75, label = "window closes", angle=90) +
-      annotate("text", x = 0.5, y = 0.55, label = "selection for\nresistance", col='red') +
-      annotate("text", x = win_opens+0.1, y = 0.5, label = "S & R killed no selection", cex=3, angle=90) +
-      annotate("text", x = win_closes-0.1, y = 0.5, label = "selection against resistance (if a cost)", cex=3, angle=90)
-    #annotate("text", x = win_opens+0.1, y = 0.9, label = "S & R killed\nno selection", cex=2.5) +
-    #annotate("text", x = win_closes-0.1, y = 0.07, label = "selection against\nresistance (if\na cost)", cex=2.5)
+      annotate("text", x = win_opens+0.05, y = 0.5, label = "window of selection opens", angle=90) +
+      annotate("text", x = win_closes+0.05, y = 0.5, label = "windows close", angle=90)
+      #annotate("text", x = 0.5, y = 0.55, label = "selection for\nresistance", col='red') +
+      #annotate("text", x = win_opens+0.1, y = 0.5, label = "S & R killed no selection", cex=3, angle=90) +
+      #annotate("text", x = win_closes-0.1, y = 0.5, label = "selection against resistance (if a cost)", cex=3, angle=90)
+
+    if (sr)
+    {
+      gg <- gg +
+        annotate("text", x = sr_win_opens+0.05, y = 0.5, label = "window of dominance opens", angle=90)
+    }
+
   }
 
-  if (lab_dom)
+  if (lab_dom>0)
   {
     #may need to sort lab_dom pos depenedent on xreverse, but xreverse may not be needed for wos_diagram
     #if (xreverse)
 
-    gg <- gg +scale_y_continuous( limits=c(0,1.2), breaks=c(0,0.5,1)) +
-    #adding dominance values as text
-    geom_text(aes(y=1.1, label=signif(dominance,1), col=NULL), size=2.6, col='grey40', angle=45, show.legend=FALSE) +
-    annotate("text", x=Inf, y=1.2, hjust=0, label = "dominance", cex=2.6, col='grey40')
+    #to subset points to label if lab_dom > 1
+    #if (lab_dom > 1) dfdiag2 <- dplyr::filter(dfdiag,(conc*conc_n)%%lab_dom==0)
+    if (lab_dom > 1) dfdiag2 <- dplyr::filter(dfdiag,row_number() %% lab_dom == 0)
+    else dfdiag2 <- dfdiag
+
+    gg <- gg + scale_y_continuous( limits=c(0,1.2), breaks=c(0,0.5,1)) +
+      #adding dominance values as text
+      geom_text(data=dfdiag2, aes(y=1.1, label=signif(dominance,1), col=NULL), size=2.6, col='grey40', angle=45, show.legend=FALSE) +
+      annotate("text", x=Inf, y=1.2, hjust=0, label = "dominance", cex=2.6, col='grey40')
   }
 
   #if (xreverse) gg <- gg + scale_x_continuous(trans='reverse')
