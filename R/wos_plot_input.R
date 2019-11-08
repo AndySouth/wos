@@ -10,7 +10,7 @@
 #' @param plot whether to plot
 #' @param xreverse whether to reverse x axis for declining concentration
 #'
-#' @import ggplot2 dplyr patchwork
+#' @import ggplot2 dplyr
 #'
 #' @examples
 #' dfsim <- wos_diagram(sim=TRUE, rr_cost=0, plot=FALSE)

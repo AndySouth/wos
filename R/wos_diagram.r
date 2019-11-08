@@ -25,11 +25,11 @@
 #' @param lab_dom whether to add labels of dominance values, 0 for none, 1 for all, 2 every other
 # @param xreverse whether to reverse x axis for declining concentration
 #'
-#' @import ggplot2 dplyr patchwork
+#' @import ggplot2 dplyr
 #'
 #' @examples
 #' wos_diagram(mort_slope=3, win_dom_strt=0.9)
-#' dfsim <- wos_diagram(sim=TRUE, rr_cost=0)
+#' dfsim <- wos_diagram(sim=TRUE, conc_n=10, rr_cost=0) #conc_n=10 num x axis points, makes faster
 #' wos_diagram(adv=TRUE,win_dom_strt=0.1)
 #'
 #' @return ggplot object

@@ -62,7 +62,7 @@ mortality over time or declining concentration for RR,SR,SS
 }
 \examples{
 wos_diagram(mort_slope=3, win_dom_strt=0.9)
-dfsim <- wos_diagram(sim=TRUE, rr_cost=0)
+dfsim <- wos_diagram(sim=TRUE, conc_n=10, rr_cost=0) #conc_n=10 num x axis points, makes faster
 wos_diagram(adv=TRUE,win_dom_strt=0.1)
 
 }

@@ -16,7 +16,7 @@
 #' @param addgrid DOESN'T WORK whether to add grid
 #' @param no_sr option for dealing with data with no SR heteroxzygotes plots dominance 0&1 with diff symbols
 #'
-#' @import ggplot2 dplyr patchwork scales rlang
+#' @import ggplot2 dplyr scales rlang
 #'
 #' @examples
 #' dfsim <- wos_diagram(sim=TRUE, conc_n=10, rr_cost=0, plot=FALSE)

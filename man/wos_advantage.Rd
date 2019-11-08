@@ -32,7 +32,7 @@ wos_advantage(dfmortbygen = NULL, x = "concentration",
 dataframe of simulation outputs
 }
 \description{
-Similar to wos_sim() which simulates time-to-resistance. 
+Similar to wos_sim() which simulates time-to-resistance.
 Requires either a dataframe with columns for genotype, x (e.g. time) and y (e.g.mortality)
 or vectors of x, and yrr,ysr,yss.
 }

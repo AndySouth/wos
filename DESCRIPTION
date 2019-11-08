@@ -6,15 +6,18 @@ Authors@R: c( person("Andy", "South", , "southandy@gmail.com", role = c("aut", "
 Description: Early development.
 Depends:
     R (>= 3.1.2)
+Remotes:
+    thomasp85/patchwork,
+    AndySouth/resistance
 Imports:
     ggplot2,
     stringr,
     tidyr,
     dplyr,
-    patchwork,
     scales,
     rlang,
-    resistance
+    resistance,
+    patchwork (>= 0.0.1)
 License: GPL-3
 LazyData: true
 RoxygenNote: 6.1.1

@@ -46,14 +46,10 @@ or vectors of x, and yrr,ysr,yss
 }
 \examples{
 dfsim <- wos_sim()
-dfsim <- wos_sim(dfmortbygen=data_frame(conc=rep(c(1,2),3),
+dfsim <- wos_sim(dfmortbygen=dplyr::data_frame(conc=rep(c(1,2),3),
                                genotype=rep(c('RR','SR','SS'),each=2),
                                mort=c(0,0.2,0.4,0.6,0.8,1)),
         x='conc',y='mort')
 #with no sr data runs dom0,0.1&1
-dfsim <- wos_sim(dfmortbygen=data_frame(conc=rep(c(1,2),2),
-                               genotype=rep(c('RR','SS'),each=2),
-                               mort=c(0,0.2,0.8,1)),
-        x='conc',y='mort')
 
 }
