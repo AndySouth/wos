@@ -95,7 +95,7 @@ if(is.null(mort_sr)){
   mort_sr <- mort_rr #setting mort_sr to mort_rr makes dominance 1
 }
 
-dfsim <- data_frame( conc = c(concs),
+dfsim <- dplyr::data_frame( conc = c(concs),
                      mort_rr = mort_rr,
                      mort_sr = mort_sr,
                      mort_ss = mort_ss,

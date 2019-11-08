@@ -13,9 +13,10 @@
 #' @param xreverse whether to reverse x axis for declining concentration
 #' @param xlog whether to log x axis
 #' @param ylog whether to log y axis
+#' @param addgrid DOESN'T WORK whether to add grid
 #' @param no_sr option for dealing with data with no SR heteroxzygotes plots dominance 0&1 with diff symbols
 #'
-#' @import ggplot2 dplyr patchwork scales
+#' @import ggplot2 dplyr patchwork scales rlang
 #'
 #' @examples
 #' dfsim <- wos_diagram(sim=TRUE, conc_n=10, rr_cost=0, plot=FALSE)
@@ -37,6 +38,7 @@ wos_plot_sim <- function(dfsim,
                              xreverse = TRUE,
                              xlog = FALSE,
                              ylog = FALSE,
+                             addgrid = TRUE,
                              no_sr = FALSE
 ) {
 

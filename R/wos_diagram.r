@@ -37,20 +37,17 @@
 
 
 wos_diagram <- function( conc_n = 100,
-                      #conc_rr_mort1 <- 0.7 # concentration killing all of rr
-                      #conc_ss_mort1 <- 0.3 # concentration killing all of ss
-                      #or try mort 0 because fits better in y=mx+c
-                      conc_rr_mort0 = 0.6, # concentration killing none of rr
-                      conc_ss_mort0 = 0.1, # concentration killing none of ss
-                      mort_slope = 3, #0.5 # slope of mortality curves
-                      sr = TRUE, # whether to include heterozygotes
-                      win_dom_strt = 0.5, #1 # dominance of resistance 0-1, it's not really dominance
-                      rr_cost = 0, #.1, #cost of resistance to rr (simply added to rr mort)
-                      dom_cost = 0, #dominance of cost
-                      exposure = 0.5, #only used in the simulation
-                      max_gen = 1000, #used in simulations
+                      conc_rr_mort0 = 0.6,
+                      conc_ss_mort0 = 0.1,
+                      mort_slope = 3,
+                      sr = TRUE,
+                      win_dom_strt = 0.5,
+                      rr_cost = 0,
+                      dom_cost = 0,
+                      exposure = 0.5,
+                      max_gen = 1000,
                       startfreq = 0.001,
-                      title = '', #"Window of selection",
+                      title = '',
                       addwindow = TRUE,
                       addshading = TRUE,
                       addlabels = TRUE,
@@ -113,9 +110,9 @@ wos_diagram <- function( conc_n = 100,
   #sr_win_closes <- concs[min(which(mort_ss > mort_sr))]
 
   dfdiag <- dplyr::data_frame( conc = c(concs,concs,concs),
-                        genotype = c(rep('rr',conc_n),
-                                     rep('ss',conc_n),
-                                     rep('sr',conc_n)),
+                        genotype = c(rep('RR',conc_n),
+                                     rep('SS',conc_n),
+                                     rep('SR',conc_n)),
                         #1st line for resistant, 2nd for susceptible
                         mortality = c(mort_rr,
                                       mort_ss,
@@ -129,17 +126,17 @@ wos_diagram <- function( conc_n = 100,
 
   #to allow window polygon plotting
   win_indices <- which(mort_ss > mort_rr)
-  dfwindow <- data_frame( conc = concs[win_indices],
+  dfwindow <- dplyr::data_frame( conc = concs[win_indices],
                           rr = mort_rr[win_indices],
                           ss = mort_ss[win_indices])
   #window for sr
   win_indices <- which(mort_ss > mort_sr)
-  dfwin_sr <- data_frame( conc = concs[win_indices],
+  dfwin_sr <- dplyr::data_frame( conc = concs[win_indices],
                           sr = mort_sr[win_indices],
                           ss = mort_ss[win_indices])
 
   #if not plotting sr just filter it out here
-  if (!sr) dfdiag <- filter(dfdiag, genotype!='sr')
+  if (!sr) dfdiag <- filter(dfdiag, genotype!='SR')
 
   gg <- dfdiag %>%
 

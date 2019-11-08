@@ -7,7 +7,8 @@
 wos_plot_sim(dfsim, x = "conc", y = "time_to_resistance0.5",
   shape = NULL, ylab = "time to\\nresistance", xlab = NULL,
   xtxt = FALSE, title = "simulation results", plot = TRUE,
-  xreverse = TRUE, xlog = FALSE, ylog = FALSE, no_sr = FALSE)
+  xreverse = TRUE, xlog = FALSE, ylog = FALSE, addgrid = TRUE,
+  no_sr = FALSE)
 }
 \arguments{
 \item{dfsim}{data  on concentration and time-to-resistance output from simulation run from wos_sim()}
@@ -33,6 +34,8 @@ wos_plot_sim(dfsim, x = "conc", y = "time_to_resistance0.5",
 \item{xlog}{whether to log x axis}
 
 \item{ylog}{whether to log y axis}
+
+\item{addgrid}{DOESN'T WORK whether to add grid}
 
 \item{no_sr}{option for dealing with data with no SR heteroxzygotes plots dominance 0&1 with diff symbols}
 }
